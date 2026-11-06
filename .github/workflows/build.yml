@@ -26,10 +26,42 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Update Android compileSdk
+      - name: Force Android SDK Versions
         run: |
-          sed -i 's/flutter.compileSdkVersion/36/g' android/app/build.gradle.kts
-          sed -i 's/flutter.minSdkVersion/21/g' android/app/build.gradle.kts
+          cat << 'EOF' > android/app/build.gradle.kts
+          plugins {
+              id("com.android.application")
+              id("kotlin-android")
+              id("dev.flutter.flutter-gradle-plugin")
+          }
+          android {
+              namespace = "com.example.pdf_quiz_app"
+              compileSdk = 36
+              ndkVersion = flutter.ndkVersion
+              compileOptions {
+                  sourceCompatibility = JavaVersion.VERSION_1_8
+                  targetCompatibility = JavaVersion.VERSION_1_8
+              }
+              defaultConfig {
+                  applicationId = "com.example.pdf_quiz_app"
+                  minSdk = 21
+                  targetSdk = flutter.targetSdkVersion
+                  versionCode = flutter.versionCode
+                  versionName = flutter.versionName
+              }
+              buildTypes {
+                  release {
+                      signingConfig = signingConfigs.getByName("debug")
+                  }
+              }
+          }
+          kotlin {
+              jvmToolchain(8)
+          }
+          flutter {
+              source = "../.."
+          }
+          EOF
 
       - name: Build release APK
         run: flutter build apk --release
