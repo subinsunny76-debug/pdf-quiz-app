@@ -14,10 +14,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-
     defaultConfig {
         applicationId = "com.example.pdf_quiz_app"
         minSdk = 21
