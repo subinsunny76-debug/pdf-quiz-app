@@ -26,6 +26,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Update Android compileSdk
+        run: |
+          sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 36/' android/app/build.gradle
+          sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 21/' android/app/build.gradle
+
       - name: Build release APK
         run: flutter build apk --release
 
