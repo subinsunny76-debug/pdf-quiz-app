@@ -20,48 +20,18 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Generate Android project structure
-        run: flutter create . --platforms=android
+      - name: Clean and Generate Android Folder
+        run: |
+          rm -rf android
+          flutter create . --platforms=android
+
+      - name: Set Android SDK Versions
+        run: |
+          echo "flutter.compileSdkVersion=36" >> android/local.properties
+          echo "flutter.minSdkVersion=21" >> android/local.properties
 
       - name: Install dependencies
         run: flutter pub get
-
-      - name: Force Android SDK Versions
-        run: |
-          cat << 'EOF' > android/app/build.gradle.kts
-          plugins {
-              id("com.android.application")
-              id("kotlin-android")
-              id("dev.flutter.flutter-gradle-plugin")
-          }
-          android {
-              namespace = "com.example.pdf_quiz_app"
-              compileSdk = 36
-              ndkVersion = flutter.ndkVersion
-              compileOptions {
-                  sourceCompatibility = JavaVersion.VERSION_1_8
-                  targetCompatibility = JavaVersion.VERSION_1_8
-              }
-              defaultConfig {
-                  applicationId = "com.example.pdf_quiz_app"
-                  minSdk = 21
-                  targetSdk = flutter.targetSdkVersion
-                  versionCode = flutter.versionCode
-                  versionName = flutter.versionName
-              }
-              buildTypes {
-                  release {
-                      signingConfig = signingConfigs.getByName("debug")
-                  }
-              }
-          }
-          kotlin {
-              jvmToolchain(8)
-          }
-          flutter {
-              source = "../.."
-          }
-          EOF
 
       - name: Build release APK
         run: flutter build apk --release
