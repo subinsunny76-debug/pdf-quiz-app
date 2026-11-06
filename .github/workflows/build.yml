@@ -25,10 +25,12 @@ jobs:
           rm -rf android
           flutter create . --platforms=android
 
-      - name: Set Android SDK Versions
+      - name: Force SDK Versions directly in Gradle
         run: |
-          echo "flutter.compileSdkVersion=36" >> android/local.properties
-          echo "flutter.minSdkVersion=21" >> android/local.properties
+          for f in android/app/build.gradle*; do
+            sed -i 's/flutter\.compileSdkVersion/36/g' "$f"
+            sed -i 's/flutter\.minSdkVersion/21/g' "$f"
+          done
 
       - name: Install dependencies
         run: flutter pub get
