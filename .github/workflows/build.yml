@@ -20,13 +20,18 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Generate Android folder
+      - name: Clean and Generate Android Folder
         run: |
           rm -rf android
           flutter create . --platforms=android
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Force SDK 36 Everywhere
+        run: |
+          find android -name "build.gradle*" -exec sed -i -E 's/compileSdk[ =]+flutter\.compileSdkVersion/compileSdk = 36/g' {} +
+          find android -name "build.gradle*" -exec sed -i -E 's/minSdk[ =]+flutter\.minSdkVersion/minSdk = 21/g' {} +
 
       - name: Build release APK
         run: flutter build apk --release
