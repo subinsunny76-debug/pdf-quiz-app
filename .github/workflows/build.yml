@@ -20,17 +20,10 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Clean and Generate Android Folder
+      - name: Generate Android folder
         run: |
           rm -rf android
           flutter create . --platforms=android
-
-      - name: Force SDK Versions directly in Gradle
-        run: |
-          for f in android/app/build.gradle*; do
-            sed -i 's/flutter\.compileSdkVersion/36/g' "$f"
-            sed -i 's/flutter\.minSdkVersion/21/g' "$f"
-          done
 
       - name: Install dependencies
         run: flutter pub get
